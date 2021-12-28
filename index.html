@@ -1,0 +1,290 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+  <title>麻将牌谱生成</title>
+  <script src="javascripts/jquery.js" type="text/javascript"></script>
+  <script src="javascripts/raphael.js" type="text/javascript"></script>
+  <script src="javascripts/html2canvas.js"></script>
+  <script type='text/javascript'>
+    $.extend({
+      getUrlVars: function () {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+      },
+      getUrlVar: function (name) {
+        return $.getUrlVars()[name];
+      }
+    });
+    $('#user_input').val($.getUrlVar('phrase'))
+  </script>
+  <style>
+	#maj_img{
+		line-height: 200px;
+		width: 1200px;
+	}
+	#maj_img img{
+		margin: auto;
+		text-align: auto;
+		vertical-align: middle;
+	}
+	#maj_img img:first-of-type{
+		margin-left: 10px;
+	}
+	#dora{
+		margin-left: 30px;
+	}
+  </style>
+</head>
+
+<body>
+  <div id="content">
+    <div id="jtab">
+      <p>输入要生成的牌谱:<a href="#" id="maj_example">(Examples:123m123p123s12345z:5m):</a></p>
+      <p><input id="user_input" size="40"></p>
+	  <p>样式: <select id="icontype"><option value ="cn">中</option><option value ="jp" selected="true">日</option></select></p>
+	  <br/>
+      <input id="maj_gen" type="button" value="生成"
+        onclick="$('#user_input').val();">
+      <input id="maj_downloadButton" type="button" value="下载">
+	  <br/>
+      <br/>
+      <div id="maj_img"></div>
+	  <br/>
+      <div id="maj_download"></div>
+    </div>
+    <br/>
+    <script type='text/javascript'>
+	var saveFile = function (data, filename) {
+          var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+          save_link.href = data;
+          save_link.download = filename;
+
+          var event = document.createEvent('MouseEvents');
+          event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+          save_link.dispatchEvent(event);
+        };
+
+      $('#maj_example').click(function () {
+        $('#user_input').val('123m123p123s12345z:5m');
+        $('#maj_gen').click();
+      })
+
+      $('#maj_gen').click(function () {
+		var icontype = $('#icontype').val();
+		var rawValue = $('#user_input').val();
+		var each = '';
+		var checkNumber = /^(\-|\+)?\d{1}$/;
+		var checkAlphabet = /^[A-Za-z]*$/;
+		var outputValue = new Array();
+		var	tempNumArray = new Array();
+		var dora = '';
+		var symbol = '';
+		var lasteach = ''
+		//牌背数量
+		var backCount = 0;
+		//图片偏移
+		var allOffset = 0;
+		
+		//分割宝牌
+		if (rawValue.match(':')){
+			todoValue = rawValue.split(':')[0];
+			dora = rawValue.split(':')[1];
+		}
+		else{
+			todoValue = rawValue;
+		}
+		
+		//输入处理
+		for (each of todoValue){
+			if (checkNumber.test(symbol + each)){
+				tempNumArray.push(symbol + each)
+				symbol = '';
+			}
+			else if (checkAlphabet.test(each)){
+				var tempEach = new Array();
+				for (tempEach of tempNumArray){
+					outputValue.push(tempEach + each)
+				}
+				tempNumArray = []
+			}
+			else if (each == '-'){
+				symbol = '-';
+			}
+		}
+		each = ''
+		$('#maj_img').html('');
+		for (each of outputValue){
+		console.log(each);
+			if (each[0] == '-'){
+				if (each == lasteach){
+				//暗杠
+					$('#maj_img').append('<img class="rotate2" src="maj' + icontype + '/' + each.substr(1,2) + '.png"/>')
+					$('.rotate2').css('transform-origin','left bottom');
+					$('.rotate2').css('transform','translateX(30px) translateY(-75px) rotate(270deg)');
+				}
+				else{
+				//吃碰
+					$('#maj_img').append('<img class="rotate1" src="maj' + icontype + '/' + each.substr(1,2) + '.png"/>')
+					$('.rotate1').css('transform-origin','left bottom');
+					$('.rotate1').css('transform','translateX(100px) rotate(270deg)');
+				}
+			}
+			else if ((each == '0b')  || (each == '1b' )){
+				backCount = backCount + 1;
+				if (backCount % 2 == 0){
+					$('#maj_img').append('<img class="rotate3" src="maj' + icontype + '/' + each + '.png"/>')
+					$('.rotate3').css('transform','translateX(-35px)');
+				}
+				else{
+					$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png"/> ');
+				}
+			}
+			else{
+				if (lasteach[0] == '-'){
+					$('#maj_img').append('<img class="rotate4" src="maj' + icontype + '/' + each + '.png"/> ');
+					$('.rotate4').css('transform','translateX(35px)');
+				}
+				else{
+					$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png"/> ');
+				}
+			}
+			lasteach = each;
+		}
+		//宝牌
+		if (dora){
+			$('#maj_img').append('<span id="dora">ドラ</span>');
+			$('#maj_img').append('<img class="rotate" src="maj' + icontype + '/' + dora + '.png"/>')
+		}
+      })
+
+	  //下载
+      $('#maj_downloadButton').click(function () {
+        html2canvas(document.querySelector("#maj_img")).then(canvas => {
+          $('#maj_download').html(canvas);
+          $('#maj_img').css('transform', 'scale(' + $('#jtab_scalevalue').val() + ')');
+          var pageData = canvas.toDataURL('image/png', 1.0);
+          var filename = $('#user_input').val();
+          saveFile(pageData.replace("image/png", "image/octet-stream"), filename + ".png");
+        });
+      })
+
+      if ($.getUrlVar('phrase')) {
+        var paraments = $.getUrlVar('phrase');
+        paraments = decodeURIComponent(paraments);
+        $('#user_input').val(paraments);
+        $('#maj_gen').click();
+      }
+    </script>
+
+<hr/>
+<div id="majcn">
+<p>中</p>
+<img src="majcn/1m.png"/>
+<img src="majcn/2m.png"/>
+<img src="majcn/3m.png"/>
+<img src="majcn/4m.png"/>
+<img src="majcn/5m.png"/>
+<img src="majcn/6m.png"/>
+<img src="majcn/7m.png"/>
+<img src="majcn/8m.png"/>
+<img src="majcn/9m.png"/>
+<br/>
+<img src="majcn/1p.png"/>
+<img src="majcn/2p.png"/>
+<img src="majcn/3p.png"/>
+<img src="majcn/4p.png"/>
+<img src="majcn/5p.png"/>
+<img src="majcn/6p.png"/>
+<img src="majcn/7p.png"/>
+<img src="majcn/8p.png"/>
+<img src="majcn/9p.png"/>
+<br/>
+<img src="majcn/1s.png"/>
+<img src="majcn/2s.png"/>
+<img src="majcn/3s.png"/>
+<img src="majcn/4s.png"/>
+<img src="majcn/5s.png"/>
+<img src="majcn/6s.png"/>
+<img src="majcn/7s.png"/>
+<img src="majcn/8s.png"/>
+<img src="majcn/9s.png"/>
+<br/>
+<img src="majcn/1z.png"/>
+<img src="majcn/2z.png"/>
+<img src="majcn/3z.png"/>
+<img src="majcn/4z.png"/>
+<img src="majcn/5z.png"/>
+<img src="majcn/6z.png"/>
+<img src="majcn/7z.png"/>
+<img src="majcn/0b.png"/>
+<img src="majcn/1b.png"/>
+<br/>
+<img src="majcn/1x.png"/>
+<img src="majcn/2x.png"/>
+<img src="majcn/3x.png"/>
+<img src="majcn/4x.png"/>
+<img src="majcn/5x.png"/>
+<img src="majcn/6x.png"/>
+<img src="majcn/7x.png"/>
+<img src="majcn/8x.png"/>
+</div>
+
+<hr/>
+
+<div id="majjp">
+<p>日</p>
+<img src="majjp/0m.png"/>
+<img src="majjp/1m.png"/>
+<img src="majjp/2m.png"/>
+<img src="majjp/3m.png"/>
+<img src="majjp/4m.png"/>
+<img src="majjp/5m.png"/>
+<img src="majjp/6m.png"/>
+<img src="majjp/7m.png"/>
+<img src="majjp/8m.png"/>
+<img src="majjp/9m.png"/>
+<br/>
+<img src="majjp/0p.png"/>
+<img src="majjp/1p.png"/>
+<img src="majjp/2p.png"/>
+<img src="majjp/3p.png"/>
+<img src="majjp/4p.png"/>
+<img src="majjp/5p.png"/>
+<img src="majjp/6p.png"/>
+<img src="majjp/7p.png"/>
+<img src="majjp/8p.png"/>
+<img src="majjp/9p.png"/>
+<br/>
+<img src="majjp/0s.png"/>
+<img src="majjp/1s.png"/>
+<img src="majjp/2s.png"/>
+<img src="majjp/3s.png"/>
+<img src="majjp/4s.png"/>
+<img src="majjp/5s.png"/>
+<img src="majjp/6s.png"/>
+<img src="majjp/7s.png"/>
+<img src="majjp/8s.png"/>
+<img src="majjp/9s.png"/>
+<br/>
+<img src="majjp/1z.png"/>
+<img src="majjp/2z.png"/>
+<img src="majjp/3z.png"/>
+<img src="majjp/4z.png"/>
+<img src="majjp/5z.png"/>
+<img src="majjp/6z.png"/>
+<img src="majjp/7z.png"/>
+<img src="majjp/0b.png"/>
+<img src="majjp/1b.png"/>
+</div>
+</body>
+</html>
