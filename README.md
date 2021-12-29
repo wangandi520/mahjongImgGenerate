@@ -6,6 +6,8 @@
 
 在html后加?，可以在打开网页的时候直接显示，例如index.html?5z1-11m2-22p-333s44-4z:7z
 
+可以直接点击图片添加
+
 # 感谢
 
 https://github.com/black-desk/mahjim

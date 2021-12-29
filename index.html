@@ -44,6 +44,7 @@
 			<br />
 			<p id="newaddress"></p>
 			<input id="maj_gen" type="button" value="生成">
+			<input id="maj_clearButton" type="button" value="清空">
 			<input id="maj_downloadButton" type="button" value="下载">
 			<input id="maj_toaddress" type="button" value="生成网址">
 			<br />
@@ -150,7 +151,12 @@
 					$('#maj_img').append('<img class="rotate" src="maj' + icontype + '/' + dora + '.png" style="margin-left:5px"/>')
 				}
 			})
-
+			
+			$('#maj_clearButton').click(function () {
+				$('#user_input').val('');
+				$('#maj_img').html('');
+			})
+			
 			//下载牌谱
 			$('#maj_downloadButton').click(function () {
 				html2canvas(document.querySelector("#maj_img")).then(canvas => {
@@ -166,8 +172,8 @@
 			$('#maj_toaddress').click(function () {
 				var href = window.location.pathname + '?' + $('#user_input').val();
 				$('#newaddress').html('<a href="' + href + '">' + href + '</a>');
-				console.log(href);
 			})
+			
 
 			//获取网址的参数并显示出牌谱
 			$(document).ready(function () {
@@ -176,10 +182,70 @@
 					$('#user_input').val(newhref.split('?')[1].split('#')[0]);
 					$('#maj_gen').click();
 				}
+				
+				
+				//图片点击
+				$('img').on('click',function(){
+					var oldsrc = $(this).attr('src');
+					var oldval = $('#user_input').val();
+					var newval = oldsrc.substring(6,8)
+					$('#user_input').val(oldval + newval);
+					$('#maj_gen').click();
+				})
 			});
+			
 		</script>
 
 		<hr />
+
+		<div id="majjp">
+			<p>日</p>
+			<img src="majjp/0m.png" />
+			<img src="majjp/1m.png" />
+			<img src="majjp/2m.png" />
+			<img src="majjp/3m.png" />
+			<img src="majjp/4m.png" />
+			<img src="majjp/5m.png" />
+			<img src="majjp/6m.png" />
+			<img src="majjp/7m.png" />
+			<img src="majjp/8m.png" />
+			<img src="majjp/9m.png" />
+			<br />
+			<img src="majjp/0p.png" />
+			<img src="majjp/1p.png" />
+			<img src="majjp/2p.png" />
+			<img src="majjp/3p.png" />
+			<img src="majjp/4p.png" />
+			<img src="majjp/5p.png" />
+			<img src="majjp/6p.png" />
+			<img src="majjp/7p.png" />
+			<img src="majjp/8p.png" />
+			<img src="majjp/9p.png" />
+			<br />
+			<img src="majjp/0s.png" />
+			<img src="majjp/1s.png" />
+			<img src="majjp/2s.png" />
+			<img src="majjp/3s.png" />
+			<img src="majjp/4s.png" />
+			<img src="majjp/5s.png" />
+			<img src="majjp/6s.png" />
+			<img src="majjp/7s.png" />
+			<img src="majjp/8s.png" />
+			<img src="majjp/9s.png" />
+			<br />
+			<img src="majjp/1z.png" />
+			<img src="majjp/2z.png" />
+			<img src="majjp/3z.png" />
+			<img src="majjp/4z.png" />
+			<img src="majjp/5z.png" />
+			<img src="majjp/6z.png" />
+			<img src="majjp/7z.png" />
+			<img src="majjp/0b.png" />
+			<img src="majjp/1b.png" />
+		</div>
+		
+		<hr />
+		
 		<div id="majcn">
 			<p>中</p>
 			<img src="majcn/1m.png" />
@@ -232,53 +298,6 @@
 			<img src="majcn/8x.png" />
 		</div>
 
-		<hr />
-
-		<div id="majjp">
-			<p>日</p>
-			<img src="majjp/0m.png" />
-			<img src="majjp/1m.png" />
-			<img src="majjp/2m.png" />
-			<img src="majjp/3m.png" />
-			<img src="majjp/4m.png" />
-			<img src="majjp/5m.png" />
-			<img src="majjp/6m.png" />
-			<img src="majjp/7m.png" />
-			<img src="majjp/8m.png" />
-			<img src="majjp/9m.png" />
-			<br />
-			<img src="majjp/0p.png" />
-			<img src="majjp/1p.png" />
-			<img src="majjp/2p.png" />
-			<img src="majjp/3p.png" />
-			<img src="majjp/4p.png" />
-			<img src="majjp/5p.png" />
-			<img src="majjp/6p.png" />
-			<img src="majjp/7p.png" />
-			<img src="majjp/8p.png" />
-			<img src="majjp/9p.png" />
-			<br />
-			<img src="majjp/0s.png" />
-			<img src="majjp/1s.png" />
-			<img src="majjp/2s.png" />
-			<img src="majjp/3s.png" />
-			<img src="majjp/4s.png" />
-			<img src="majjp/5s.png" />
-			<img src="majjp/6s.png" />
-			<img src="majjp/7s.png" />
-			<img src="majjp/8s.png" />
-			<img src="majjp/9s.png" />
-			<br />
-			<img src="majjp/1z.png" />
-			<img src="majjp/2z.png" />
-			<img src="majjp/3z.png" />
-			<img src="majjp/4z.png" />
-			<img src="majjp/5z.png" />
-			<img src="majjp/6z.png" />
-			<img src="majjp/7z.png" />
-			<img src="majjp/0b.png" />
-			<img src="majjp/1b.png" />
-		</div>
 </body>
 
 </html>
