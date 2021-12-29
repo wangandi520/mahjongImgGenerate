@@ -42,8 +42,10 @@
 					<option value="jp" selected="true">日</option>
 				</select></p>
 			<br />
+			<p id="newaddress"></p>
 			<input id="maj_gen" type="button" value="生成">
 			<input id="maj_downloadButton" type="button" value="下载">
+			<input id="maj_toaddress" type="button" value="生成网址">
 			<br />
 			<br />
 			<div id="maj_img"></div>
@@ -127,6 +129,7 @@
 						}
 					}
 					else if ((each == '0b') || (each == '1b')) {
+						//牌背，暂不完善
 						backCount = backCount + 1;
 						if (backCount % 2 == 0) {
 							$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png" style="transform:translateX(-64px)"/>')
@@ -148,7 +151,7 @@
 				}
 			})
 
-			//下载
+			//下载牌谱
 			$('#maj_downloadButton').click(function () {
 				html2canvas(document.querySelector("#maj_img")).then(canvas => {
 					$('#maj_download').html(canvas);
@@ -158,11 +161,21 @@
 					saveFile(pageData.replace("image/png", "image/octet-stream"), filename + ".png");
 				});
 			})
+			
+			//生成网址
+			$('#maj_toaddress').click(function () {
+				var href = window.location.pathname + '?' + $('#user_input').val();
+				$('#newaddress').html('<a href="' + href + '">' + href + '</a>');
+				console.log(href);
+			})
 
+			//获取网址的参数并显示出牌谱
 			$(document).ready(function () {
-				var href = window.location.href.split('?')[1].split('#')[0];
-				$('#user_input').val(href);
-				$('#maj_gen').click();
+				var newhref = window.location.href;
+				if (newhref.indexOf('?') > 0){
+					$('#user_input').val(newhref.split('?')[1].split('#')[0]);
+					$('#maj_gen').click();
+				}
 			});
 		</script>
 
