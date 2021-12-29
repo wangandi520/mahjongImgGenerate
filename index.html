@@ -11,6 +11,7 @@
 	<style>
 		#maj_img {
 			line-height: 200px;
+			height: 200px;
 			width: 1300px;
 		}
 
@@ -30,11 +31,12 @@
 			margin-left: 30px;
 		}
 	</style>
+
 </head>
 
 <body>
 	<div id="content">
-		<div id="jtab">
+		<div id="majtab">
 			<p>输入要生成的牌谱:<a href="#" id="maj_example">(Examples:5z1-11m2-22p-333s44-4z:7z):</a></p>
 			<p><input id="user_input" size="40"></p>
 			<p>样式: <select id="icontype">
@@ -54,151 +56,7 @@
 			<div id="maj_download"></div>
 		</div>
 		<br />
-		<script type='text/javascript'>
-			var saveFile = function (data, filename) {
-				var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-				save_link.href = data;
-				save_link.download = filename;
 
-				var event = document.createEvent('MouseEvents');
-				event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-				save_link.dispatchEvent(event);
-			};
-
-			$('#maj_example').click(function () {
-				$('#user_input').val('5z1-11m2-22p-333s44-4z:7z');
-				$('#maj_gen').click();
-			})
-
-			$('#maj_gen').click(function () {
-				var icontype = $('#icontype').val();
-				var rawValue = $('#user_input').val();
-				var each = '';
-				var checkNumber = /^(\-|\+)?\d{1}$/;
-				var checkAlphabet = /^[A-Za-z]*$/;
-				var outputValue = new Array();
-				var tempNumArray = new Array();
-				var dora = '';
-				var symbol = '';
-				var lasteach = ''
-				//牌背数量
-				var backCount = 0;
-				//图片偏移
-				var allOffset = 0;
-
-				//分割宝牌
-				if (rawValue.match(':')) {
-					todoValue = rawValue.split(':')[0];
-					dora = rawValue.split(':')[1];
-				}
-				else {
-					todoValue = rawValue;
-				}
-
-				//输入处理
-				for (each of todoValue) {
-					if (checkNumber.test(symbol + each)) {
-						tempNumArray.push(symbol + each)
-						symbol = '';
-					}
-					else if (checkAlphabet.test(each)) {
-						var tempEach = new Array();
-						for (tempEach of tempNumArray) {
-							outputValue.push(tempEach + each)
-						}
-						tempNumArray = []
-					}
-					else if (each == '-') {
-						symbol = '-';
-					}
-				}
-				each = ''
-				$('#maj_img').html('');
-				for (each of outputValue) {
-					if (each[0] == '-') {
-						if (each == lasteach) {
-							//暗杠
-							$('#maj_img').append('<img src="maj' + icontype + '/' + each.substr(1, 2) + '.png" style="transform-origin:left bottom;transform:translateX(-1px) translateY(-72px) rotate(270deg)"/>')
-							//$('.rotate2').css('transform-origin','left bottom');
-							//$('.rotate2').css('transform','translateX(30px) translateY(-75px) rotate(270deg)');
-						}
-						else {
-							//吃碰
-							$('#maj_img').append('<img src="maj' + icontype + '/' + each.substr(1, 2) + '.png" style="transform-origin:left bottom;transform:translateX(100px) rotate(270deg);margin-right:33px;"/>')
-							//$('.rotate1').css('transform-origin','left bottom');
-							//$('.rotate1').css('transform','rotate(270deg)');
-						}
-					}
-					else if ((each == '0b') || (each == '1b')) {
-						//牌背，暂不完善
-						backCount = backCount + 1;
-						if (backCount % 2 == 0) {
-							$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png" style="transform:translateX(-64px)"/>')
-							//$('.rotate3').css('transform','translateX(-35px)');
-						}
-						else {
-							$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png"  style="margin-right:5px;"/>');
-						}
-					}
-					else {
-						$('#maj_img').append('<img src="maj' + icontype + '/' + each + '.png" style="margin-left:-1px;margin-right:-1px;"/> ');
-					}
-					lasteach = each;
-				}
-				//宝牌
-				if (dora) {
-					$('#maj_img').append('<span id="dora">ドラ</span>');
-					$('#maj_img').append('<img class="rotate" src="maj' + icontype + '/' + dora + '.png" style="margin-left:5px"/>')
-				}
-			})
-			
-			$('#maj_clearButton').click(function () {
-				$('#user_input').val('');
-				$('#maj_img').html('');
-			})
-			
-			$('#icontype').click(function () {
-				$('#maj_gen').click();
-			})
-			
-			//下载牌谱
-			$('#maj_downloadButton').click(function () {
-				html2canvas(document.querySelector("#maj_img")).then(canvas => {
-					$('#maj_download').html(canvas);
-					$('#maj_img').css('transform', 'scale(' + $('#jtab_scalevalue').val() + ')');
-					var pageData = canvas.toDataURL('image/png', 1.0);
-					var filename = $('#user_input').val();
-					saveFile(pageData.replace("image/png", "image/octet-stream"), filename + ".png");
-				});
-			})
-			
-			//生成网址
-			$('#maj_toaddress').click(function () {
-				var href = window.location.pathname + '?' + $('#user_input').val();
-				$('#newaddress').html('<a href="' + href + '">' + href + '</a>');
-			})
-			
-
-			//获取网址的参数并显示出牌谱
-			$(document).ready(function () {
-				var newhref = window.location.href;
-				if (newhref.indexOf('?') > 0){
-					$('#user_input').val(newhref.split('?')[1].split('#')[0]);
-					$('#maj_gen').click();
-				}
-				
-				
-				//图片点击
-				$('img').on('click',function(){
-					var oldsrc = $(this).attr('src');
-					var oldval = $('#user_input').val();
-					var newval = oldsrc.substring(6,8)
-					$('#user_input').val(oldval + newval);
-					$('#maj_gen').click();
-				})
-			});
-			
-		</script>
 
 		<hr />
 
@@ -301,7 +159,185 @@
 			<img src="majcn/7x.png" />
 			<img src="majcn/8x.png" />
 		</div>
+		<script type='text/javascript'>
+			var saveFile = function (data, filename) {
+				var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+				save_link.href = data;
+				save_link.download = filename;
 
+				var event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				save_link.dispatchEvent(event);
+			};
+
+			$('#maj_example').click(function () {
+				$('#user_input').val('5z1-11m2-22p-333s44-4z:7z');
+				$('#maj_gen').click();
+			})
+
+			$('#maj_gen').click(function () {
+				var icontype = $('#icontype').val();
+				var rawValue = $('#user_input').val();
+				var each = '';
+				var checkNumber = /^(\-|\+)?\d{1}$/;
+				var checkAlphabet = /^[A-Za-z]*$/;
+				var outputValue = new Array();
+				var tempNumArray = new Array();
+				var dora = '';
+				var symbol = '';
+				var lasteach = ''
+				//牌背数量
+				var backCount = 0;
+				//图片偏移
+				var allOffset = 0;
+
+				//分割宝牌
+				if (rawValue.match(':')) {
+					todoValue = rawValue.split(':')[0];
+					dora = rawValue.split(':')[1];
+				}
+				else {
+					todoValue = rawValue;
+				}
+
+				//输入处理
+				for (each of todoValue) {
+					if (checkNumber.test(symbol + each)) {
+						tempNumArray.push(symbol + each)
+						symbol = '';
+					}
+					else if (checkAlphabet.test(each)) {
+						var tempEach = new Array();
+						for (tempEach of tempNumArray) {
+							outputValue.push(tempEach + each)
+						}
+						tempNumArray = []
+					}
+					else if (each == '-') {
+						symbol = '-';
+					}
+				}
+				each = ''
+				$('#maj_img').html('');
+				for (each of outputValue) {
+					if (each[0] == '-') {
+						if (each == lasteach) {
+							//暗杠
+							$('#maj_img').append('<img class="' + each + '" src="maj' + icontype + '/' + each.substr(1, 2) + '.png" style="transform-origin:left bottom;transform:translateX(-1px) translateY(-72px) rotate(270deg)"/>')
+							//$('.rotate2').css('transform-origin','left bottom');
+							//$('.rotate2').css('transform','translateX(30px) translateY(-75px) rotate(270deg)');
+						}
+						else {
+							//吃碰
+							$('#maj_img').append('<img class="' + each + '" src="maj' + icontype + '/' + each.substr(1, 2) + '.png" style="transform-origin:left bottom;transform:translateX(100px) rotate(270deg);margin-right:33px;"/>')
+							//$('.rotate1').css('transform-origin','left bottom');
+							//$('.rotate1').css('transform','rotate(270deg)');
+						}
+					}
+					else if ((each == '0b') || (each == '1b')) {
+						//牌背，暂不完善
+						backCount = backCount + 1;
+						if (backCount % 2 == 0) {
+							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png" style="transform:translateX(-64px)"/>')
+							//$('.rotate3').css('transform','translateX(-35px)');
+						}
+						else {
+							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png"  style="margin-right:5px;"/>');
+						}
+					}
+					else {
+						$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png" style="margin-left:-1px;margin-right:-1px;"/> ');
+					}
+					lasteach = each;
+				}
+				//宝牌
+				if (dora) {
+					$('#maj_img').append('<span id="dora">ドラ</span>');
+					$('#maj_img').append('<img class="dora' + dora + '"  src="maj' + icontype + '/' + dora + '.png" style="margin-left:5px"/>')
+				}
+				
+				//点击图片删除
+				$('#maj_img img').on('click',function(){
+					$(this).remove();
+					if ($(this).attr('class').substring(0,4) == 'dora'){
+						$('#dora').remove();
+					}
+					var allMaj = new Array();
+					$('#maj_img img').each(function(){
+						allMaj.push($(this).attr('class'));
+					});
+					//重新写入文本框
+					
+					var newval = ''
+					for (each of allMaj) {
+						if (each.substring(0,4) != 'dora'){
+							newval = newval + each;
+						}
+						if (each.substring(0,4) == 'dora'){
+							newval = newval + ':' + each.substring(4,6);
+						}
+					}
+					$('#user_input').val(newval);
+				})
+			})
+			
+			$('#maj_clearButton').click(function () {
+				$('#user_input').val('');
+				$('#maj_img').html('');
+				$('#maj_download').html('');
+			})
+			
+			$('#icontype').click(function () {
+				$('#maj_gen').click();
+			})
+			
+			//下载牌谱
+			$('#maj_downloadButton').click(function () {
+				html2canvas(document.querySelector("#maj_img")).then(canvas => {
+					$('#maj_download').html(canvas);
+					var pageData = canvas.toDataURL('image/png', 1.0);
+					var filename = $('#user_input').val();
+					saveFile(pageData.replace("image/png", "image/octet-stream"), filename + ".png");
+				});
+			})
+			
+			//生成网址
+			$('#maj_toaddress').click(function () {
+				var href = window.location.pathname + '?' + $('#user_input').val();
+				$('#newaddress').html('<a href="' + href + '">' + href + '</a>');
+			})
+			
+
+			//获取网址的参数并显示出牌谱
+			$(document).ready(function () {
+				var newhref = window.location.href;
+				if (newhref.indexOf('?') > 0){
+					$('#user_input').val(newhref.split('?')[1].split('#')[0]);
+					$('#maj_gen').click();
+				}
+				
+				
+				//点击图片添加
+				$('#majjp img,#majcn img').on('click',function(){
+					var oldsrc = $(this).attr('src');
+					var oldval = $('#user_input').val();
+					if (oldval.indexOf(':') > 0){
+						var others = '';
+						others = oldval.split(':')[0];
+						var dora = oldval.split(':')[1];
+						var newval = oldsrc.substring(6,8)
+						$('#user_input').val(others + newval + ':' + dora);
+						$('#maj_gen').click();
+					}
+					else{
+						var newval = oldsrc.substring(6,8)
+						$('#user_input').val(oldval + newval);
+						$('#maj_gen').click();
+					}
+				})
+				
+			});
+		</script>
 </body>
 
 </html>
