@@ -157,6 +157,10 @@
 				$('#maj_img').html('');
 			})
 			
+			$('#icontype').click(function () {
+				$('#maj_gen').click();
+			})
+			
 			//下载牌谱
 			$('#maj_downloadButton').click(function () {
 				html2canvas(document.querySelector("#maj_img")).then(canvas => {
