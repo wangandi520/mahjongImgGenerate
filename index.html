@@ -105,9 +105,9 @@
 			<img src="majjp/0b.png" />
 			<img src="majjp/1b.png" />
 		</div>
-		
+
 		<hr />
-		
+
 		<div id="majcn">
 			<p>中</p>
 			<img src="majcn/1m.png" />
@@ -255,42 +255,42 @@
 					$('#maj_img').append('<span id="dora">ドラ</span>');
 					$('#maj_img').append('<img class="dora' + dora + '"  src="maj' + icontype + '/' + dora + '.png" style="margin-left:5px"/>')
 				}
-				
+
 				//点击图片删除
-				$('#maj_img img').on('click',function(){
+				$('#maj_img img').on('click', function () {
 					$(this).remove();
-					if ($(this).attr('class').substring(0,4) == 'dora'){
+					if ($(this).attr('class').substring(0, 4) == 'dora') {
 						$('#dora').remove();
 					}
 					var allMaj = new Array();
-					$('#maj_img img').each(function(){
+					$('#maj_img img').each(function () {
 						allMaj.push($(this).attr('class'));
 					});
 					//重新写入文本框
-					
+
 					var newval = ''
 					for (each of allMaj) {
-						if (each.substring(0,4) != 'dora'){
+						if (each.substring(0, 4) != 'dora') {
 							newval = newval + each;
 						}
-						if (each.substring(0,4) == 'dora'){
-							newval = newval + ':' + each.substring(4,6);
+						if (each.substring(0, 4) == 'dora') {
+							newval = newval + ':' + each.substring(4, 6);
 						}
 					}
 					$('#user_input').val(newval);
 				})
 			})
-			
+
 			$('#maj_clearButton').click(function () {
 				$('#user_input').val('');
 				$('#maj_img').html('');
 				$('#maj_download').html('');
 			})
-			
+
 			$('#icontype').click(function () {
 				$('#maj_gen').click();
 			})
-			
+
 			//下载牌谱
 			$('#maj_downloadButton').click(function () {
 				html2canvas(document.querySelector("#maj_img")).then(canvas => {
@@ -300,42 +300,47 @@
 					saveFile(pageData.replace("image/png", "image/octet-stream"), filename + ".png");
 				});
 			})
-			
+
 			//生成网址
 			$('#maj_toaddress').click(function () {
 				var href = window.location.pathname + '?' + $('#user_input').val();
 				$('#newaddress').html('<a href="' + href + '">' + href + '</a>');
 			})
-			
+
 
 			//获取网址的参数并显示出牌谱
 			$(document).ready(function () {
 				var newhref = window.location.href;
-				if (newhref.indexOf('?') > 0){
+				if (newhref.indexOf('?') > 0) {
 					$('#user_input').val(newhref.split('?')[1].split('#')[0]);
 					$('#maj_gen').click();
 				}
-				
-				
+
+
 				//点击图片添加
-				$('#majjp img,#majcn img').on('click',function(){
+				$('#majjp img,#majcn img').on('click', function () {
 					var oldsrc = $(this).attr('src');
 					var oldval = $('#user_input').val();
-					if (oldval.indexOf(':') > 0){
+					if (oldval.indexOf(':') > 0) {
 						var others = '';
 						others = oldval.split(':')[0];
 						var dora = oldval.split(':')[1];
-						var newval = oldsrc.substring(6,8)
+						var newval = oldsrc.substring(6, 8)
 						$('#user_input').val(others + newval + ':' + dora);
 						$('#maj_gen').click();
 					}
-					else{
-						var newval = oldsrc.substring(6,8)
+					else {
+						var newval = oldsrc.substring(6, 8)
 						$('#user_input').val(oldval + newval);
 						$('#maj_gen').click();
 					}
 				})
-				
+
+				$(document).keydown(function () {
+					if (event.keyCode == 13) {//回车键的键值为13
+						$('#maj_gen').click();
+					}
+				});
 			});
 		</script>
 </body>
