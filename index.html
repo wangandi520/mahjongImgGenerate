@@ -45,6 +45,8 @@
 				</select></p>
 			<br />
 			<p id="newaddress"></p>
+			<p><a href="https://github.com/wangandi520/mahjongImgGenerate">项目地址:
+					https://github.com/wangandi520/mahjongImgGenerate</a></p>
 			<input id="maj_gen" type="button" value="生成">
 			<input id="maj_clearButton" type="button" value="清空">
 			<input id="maj_downloadButton" type="button" value="下载">
@@ -238,11 +240,11 @@
 						//牌背，暂不完善
 						backCount = backCount + 1;
 						if (backCount % 2 == 0) {
-							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png" style="transform:translateX(-64px)"/>')
+							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png" style="margin-right:5px;transform:translateX(2px)"/>')
 							//$('.rotate3').css('transform','translateX(-35px)');
 						}
 						else {
-							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png"  style="margin-right:5px;"/>');
+							$('#maj_img').append('<img class="' + each + '"  src="maj' + icontype + '/' + each + '.png"  style="margin-right:5px;transform:translateX(2px);"/>');
 						}
 					}
 					else {
@@ -250,11 +252,34 @@
 					}
 					lasteach = each;
 				}
+
 				//宝牌
 				if (dora) {
 					$('#maj_img').append('<span id="dora">ドラ</span>');
 					$('#maj_img').append('<img class="dora' + dora + '"  src="maj' + icontype + '/' + dora + '.png" style="margin-left:5px"/>')
 				}
+
+				//二次整理css
+
+				$('#maj_img img:gt(2)').each(function () {
+					if (typeof($(this).prev().prev())  != "undefined"){
+						//if (($(this).prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).prev().prev().attr('class'))){
+						if ($(this).prev().attr('class') == $(this).prev().prev().attr('class')){
+							if (($(this).prev().attr('class')[0] == '-')){
+								console.log($(this).attr('class'));
+								$(this).css('transform','translateX(-66px)');
+							}
+						}
+						if ($(this).prev().prev().attr('class') == $(this).prev().prev().prev().attr('class')){
+							if (($(this).prev().prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).attr('class'))){
+								console.log($(this).attr('class'));
+								$(this).css('transform','translateX(-66px)');
+								$(this).prev().css('transform','translateX(-66px)');
+								
+							}
+						}
+					}
+				});
 
 				//点击图片删除
 				$('#maj_img img').on('click', function () {
