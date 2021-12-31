@@ -260,7 +260,6 @@
 				}
 
 				//二次整理css
-
 				$('#maj_img img:gt(2)').each(function () {
 					if (typeof($(this).prev().prev())  != "undefined"){
 						//if (($(this).prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).prev().prev().attr('class'))){
@@ -275,7 +274,6 @@
 								console.log($(this).attr('class'));
 								$(this).css('transform','translateX(-66px)');
 								$(this).prev().css('transform','translateX(-66px)');
-								
 							}
 						}
 					}
@@ -291,8 +289,8 @@
 					$('#maj_img img').each(function () {
 						allMaj.push($(this).attr('class'));
 					});
+					
 					//重新写入文本框
-
 					var newval = ''
 					for (each of allMaj) {
 						if (each.substring(0, 4) != 'dora') {
