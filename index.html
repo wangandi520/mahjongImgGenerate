@@ -317,51 +317,71 @@
 				var majValue = $('#user_input').val();
 				if (majValue.indexOf(':') < 0) {
 					//no dora
-					var others = majValue;
-					console.log(others);
+					var checkNumber = /^(\-|\+)?\d{1}$/;
+					var checkAlphabet = /^[A-Za-z]*$/;
+					var outputValue = new Array();
+					var tempNumArray = new Array();
+					for (each of majValue) {
+						if (checkNumber.test(each)) {
+							tempNumArray.push(each)
+							symbol = '';
+						}
+						else if (checkAlphabet.test(each)) {
+							var tempEach = new Array();
+							for (tempEach of tempNumArray) {
+								outputValue.push(tempEach + each)
+							}
+							tempNumArray = []
+						}
+					}
+
+					var others = '';
+					for (each of outputValue) {
+						others = others + each;
+					}
 				}
 				if (majValue.indexOf(':') > 0) {
 					//dora
 					var others = majValue.split(':')[0];
 					var dora = majValue.split(':')[1];
 				}
-					var eachArray = []
-					for (var i = 0; i < others.length; i = i + 2){
-						eachArray.push(others.substr(i, 2));
+				var eachArray = []
+				for (var i = 0; i < others.length; i = i + 2) {
+					eachArray.push(others.substr(i, 2));
+				}
+				var mArray = []
+				var pArray = []
+				var sArray = []
+				var zArray = []
+				for (each of eachArray) {
+					if (each[1] == 'm') {
+						mArray.push(each);
 					}
-					var mArray = []
-					var pArray = []
-					var sArray = []
-					var zArray = []
-					for (each of eachArray){
-						if (each[1] == 'm'){
-							mArray.push(each);
-						}
-						if (each[1] == 'p'){
-							pArray.push(each);
-						}
-						if (each[1] == 's'){
-							sArray.push(each);
-						}
-						if (each[1] == 'z'){
-							zArray.push(each);
-						}
+					if (each[1] == 'p') {
+						pArray.push(each);
 					}
-					newArray = '';
-					//newArray.push(mArray.sort());
-					newArray = mArray.sort() + ',' + pArray.sort() + ',' + sArray.sort() + ',' + zArray.sort();
-					outputValue = ''
-					for (each of newArray){
-						outputValue = outputValue + each;
+					if (each[1] == 's') {
+						sArray.push(each);
 					}
-					if (majValue.indexOf(':') < 0) {
-						outputValue = outputValue.replace(/,/g,'');
+					if (each[1] == 'z') {
+						zArray.push(each);
 					}
-					if (majValue.indexOf(':') > 0) {
-						outputValue = outputValue.replace(/,/g,'') + ':' + dora;
-					}
-					$('#user_input').val(outputValue);
-					$('#maj_gen').click();
+				}
+				newArray = '';
+				//newArray.push(mArray.sort());
+				newArray = mArray.sort() + ',' + pArray.sort() + ',' + sArray.sort() + ',' + zArray.sort();
+				outputValue = ''
+				for (each of newArray) {
+					outputValue = outputValue + each;
+				}
+				if (majValue.indexOf(':') < 0) {
+					outputValue = outputValue.replace(/,/g, '');
+				}
+				if (majValue.indexOf(':') > 0) {
+					outputValue = outputValue.replace(/,/g, '') + ':' + dora;
+				}
+				$('#user_input').val(outputValue);
+				$('#maj_gen').click();
 			})
 
 			//随机生成13张牌
