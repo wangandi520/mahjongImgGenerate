@@ -317,11 +317,14 @@
 				var majValue = $('#user_input').val();
 				if (majValue.indexOf(':') < 0) {
 					//no dora
+					var others = majValue;
+					console.log(others);
 				}
 				if (majValue.indexOf(':') > 0) {
 					//dora
 					var others = majValue.split(':')[0];
 					var dora = majValue.split(':')[1];
+				}
 					var eachArray = []
 					for (var i = 0; i < others.length; i = i + 2){
 						eachArray.push(others.substr(i, 2));
@@ -351,10 +354,14 @@
 					for (each of newArray){
 						outputValue = outputValue + each;
 					}
-					outputValue = outputValue.replace(/,/g,'') + ':' + dora;
+					if (majValue.indexOf(':') < 0) {
+						outputValue = outputValue.replace(/,/g,'');
+					}
+					if (majValue.indexOf(':') > 0) {
+						outputValue = outputValue.replace(/,/g,'') + ':' + dora;
+					}
 					$('#user_input').val(outputValue);
 					$('#maj_gen').click();
-				}
 			})
 
 			//随机生成13张牌
