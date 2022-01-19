@@ -48,7 +48,9 @@
 			<p><a href="https://github.com/wangandi520/mahjongImgGenerate">项目地址:
 					https://github.com/wangandi520/mahjongImgGenerate</a></p>
 			<input id="maj_gen" type="button" value="生成">
+			<input id="maj_orderButton" type="button" value="理牌">
 			<input id="maj_clearButton" type="button" value="清空">
+			<input id="maj_random" type="button" value="随机13张牌">
 			<input id="maj_downloadButton" type="button" value="下载">
 			<input id="maj_toaddress" type="button" value="生成网址">
 			<br />
@@ -261,19 +263,19 @@
 
 				//二次整理css
 				$('#maj_img img:gt(2)').each(function () {
-					if (typeof($(this).prev().prev())  != "undefined"){
+					if (typeof ($(this).prev().prev()) != "undefined") {
 						//if (($(this).prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).prev().prev().attr('class'))){
-						if ($(this).prev().attr('class') == $(this).prev().prev().attr('class')){
-							if (($(this).prev().attr('class')[0] == '-')){
+						if ($(this).prev().attr('class') == $(this).prev().prev().attr('class')) {
+							if (($(this).prev().attr('class')[0] == '-')) {
 								console.log($(this).attr('class'));
-								$(this).css('transform','translateX(-66px)');
+								$(this).css('transform', 'translateX(-66px)');
 							}
 						}
-						if ($(this).prev().prev().attr('class') == $(this).prev().prev().prev().attr('class')){
-							if (($(this).prev().prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).attr('class'))){
+						if ($(this).prev().prev().attr('class') == $(this).prev().prev().prev().attr('class')) {
+							if (($(this).prev().prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).attr('class'))) {
 								console.log($(this).attr('class'));
-								$(this).css('transform','translateX(-66px)');
-								$(this).prev().css('transform','translateX(-66px)');
+								$(this).css('transform', 'translateX(-66px)');
+								$(this).prev().css('transform', 'translateX(-66px)');
 							}
 						}
 					}
@@ -289,7 +291,7 @@
 					$('#maj_img img').each(function () {
 						allMaj.push($(this).attr('class'));
 					});
-					
+
 					//重新写入文本框
 					var newval = ''
 					for (each of allMaj) {
@@ -308,6 +310,105 @@
 				$('#user_input').val('');
 				$('#maj_img').html('');
 				$('#maj_download').html('');
+			})
+
+			//理牌
+			$('#maj_orderButton').click(function () {
+				var majValue = $('#user_input').val();
+				if (majValue.indexOf(':') < 0) {
+					//no dora
+				}
+				if (majValue.indexOf(':') > 0) {
+					//dora
+					var others = majValue.split(':')[0];
+					var dora = majValue.split(':')[1];
+					var eachArray = []
+					for (var i = 0; i < others.length; i = i + 2){
+						eachArray.push(others.substr(i, 2));
+					}
+					var mArray = []
+					var pArray = []
+					var sArray = []
+					var zArray = []
+					for (each of eachArray){
+						if (each[1] == 'm'){
+							mArray.push(each);
+						}
+						if (each[1] == 'p'){
+							pArray.push(each);
+						}
+						if (each[1] == 's'){
+							sArray.push(each);
+						}
+						if (each[1] == 'z'){
+							zArray.push(each);
+						}
+					}
+					newArray = '';
+					//newArray.push(mArray.sort());
+					newArray = mArray.sort() + ',' + pArray.sort() + ',' + sArray.sort() + ',' + zArray.sort();
+					outputValue = ''
+					for (each of newArray){
+						outputValue = outputValue + each;
+					}
+					outputValue = outputValue.replace(/,/g,'') + ':' + dora;
+					$('#user_input').val(outputValue);
+					$('#maj_gen').click();
+				}
+			})
+
+			//随机生成13张牌
+			$('#maj_random').click(function () {
+				var rawMahjong = [
+					'1p', '1p', '1p', '1p',
+					'2p', '2p', '2p', '2p',
+					'3p', '3p', '3p', '3p',
+					'4p', '4p', '4p', '4p',
+					'5p', '5p', '5p', '0p',
+					'6p', '6p', '6p', '6p',
+					'7p', '7p', '7p', '7p',
+					'8p', '8p', '8p', '8p',
+					'9p', '9p', '9p', '9p',
+					'1s', '1s', '1s', '1s',
+					'2s', '2s', '2s', '2s',
+					'3s', '3s', '3s', '3s',
+					'4s', '4s', '4s', '4s',
+					'5s', '5s', '5s', '0s',
+					'6s', '6s', '6s', '6s',
+					'7s', '7s', '7s', '7s',
+					'8s', '8s', '8s', '8s',
+					'9s', '9s', '9s', '9s',
+					'1m', '1m', '1m', '1m',
+					'2m', '2m', '2m', '2m',
+					'3m', '3m', '3m', '3m',
+					'4m', '4m', '4m', '4m',
+					'5m', '5m', '5m', '0m',
+					'6m', '6m', '6m', '6m',
+					'7m', '7m', '7m', '7m',
+					'8m', '8m', '8m', '8m',
+					'9m', '9m', '9m', '9m',
+					'1z', '1z', '1z', '1z',
+					'2z', '2z', '2z', '2z',
+					'3z', '3z', '3z', '3z',
+					'4z', '4z', '4z', '4z',
+					'5z', '5z', '5z', '5z',
+					'6z', '6z', '6z', '6z',
+					'7z', '7z', '7z', '7z',
+				];
+				var randomMaj = ''
+				for (var i = 0; i < 14; i++) {
+					var randomIndex = Math.floor(Math.random() * rawMahjong.length);
+					if (i < 13) {
+						randomMaj = randomMaj + rawMahjong[randomIndex];
+					}
+					else if (i == 13) {
+						randomMaj = randomMaj + ':' + rawMahjong[randomIndex];
+					}
+					rawMahjong.splice(randomIndex, 1)
+				}
+				$('#user_input').val(randomMaj);
+				$('#maj_gen').click();
+				$('#maj_orderButton').click();
 			})
 
 			$('#icontype').click(function () {
@@ -345,8 +446,7 @@
 					var oldsrc = $(this).attr('src');
 					var oldval = $('#user_input').val();
 					if (oldval.indexOf(':') > 0) {
-						var others = '';
-						others = oldval.split(':')[0];
+						var others = oldval.split(':')[0];
 						var dora = oldval.split(':')[1];
 						var newval = oldsrc.substring(6, 8)
 						$('#user_input').val(others + newval + ':' + dora);
