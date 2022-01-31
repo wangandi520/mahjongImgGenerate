@@ -267,13 +267,13 @@
 						//if (($(this).prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).prev().prev().attr('class'))){
 						if ($(this).prev().attr('class') == $(this).prev().prev().attr('class')) {
 							if (($(this).prev().attr('class')[0] == '-')) {
-								console.log($(this).attr('class'));
+								//console.log($(this).attr('class'));
 								$(this).css('transform', 'translateX(-66px)');
 							}
 						}
 						if ($(this).prev().prev().attr('class') == $(this).prev().prev().prev().attr('class')) {
 							if (($(this).prev().prev().attr('class')[0] == '-') && ($(this).prev().attr('class') == $(this).attr('class'))) {
-								console.log($(this).attr('class'));
+								//console.log($(this).attr('class'));
 								$(this).css('transform', 'translateX(-66px)');
 								$(this).prev().css('transform', 'translateX(-66px)');
 							}
@@ -368,9 +368,68 @@
 						zArray.push(each);
 					}
 				}
+				mArray = mArray.sort();
+				pArray = pArray.sort();
+				sArray = sArray.sort();
+				zArray = zArray.sort();
+				// fix 0mps loc
+				if (mArray[0] == '0m' && mArray.length > 1){
+					mArray.splice(0,1);
+					var getIndex = -1;
+					for (var i = 0; i < mArray.length - 1; i++){
+						if (mArray[i][0] <= 5 && mArray[i + 1][0] >= 5){
+							getIndex = i + 1;
+						}
+					}
+					if (mArray[0][0] >= 5){
+						getIndex = 0;
+					}
+					if (mArray[mArray.length - 1][0] <= 5){
+						getIndex = mArray.length;
+					}
+					if (getIndex != -1){
+						mArray.splice(getIndex, 0, '0m');
+					}
+				}
+				if (pArray[0] == '0p' && pArray.length > 1){
+					pArray.splice(0,1);
+					var getIndex = -1;
+					for (var i = 0; i < pArray.length - 1; i++){
+						if (pArray[i][0] <= 5 && pArray[i + 1][0] >= 5){
+							getIndex = i + 1;
+						}
+					}
+					if (pArray[0][0] >= 5){
+						getIndex = 0;
+					}
+					if (pArray[pArray.length - 1][0] <= 5){
+						getIndex = pArray.length;
+					}
+					if (getIndex != -1){
+						pArray.splice(getIndex, 0, '0p');
+					}
+				}
+				if (sArray[0] == '0s' && sArray.length > 1){
+					sArray.splice(0,1);
+					var getIndex = -1;
+					for (var i = 0; i < sArray.length - 1; i++){
+						if (sArray[i][0] <= 5 && sArray[i + 1][0] >= 5){
+							getIndex = i + 1;
+						}
+					}
+					if (sArray[0][0] >= 5){
+						getIndex = 0;
+					}
+					if (sArray[sArray.length - 1][0] <= 5){
+						getIndex = sArray.length;
+					}
+					if (getIndex != -1){
+						sArray.splice(getIndex, 0, '0s');
+					}
+				}
 				newArray = '';
 				//newArray.push(mArray.sort());
-				newArray = mArray.sort() + ',' + pArray.sort() + ',' + sArray.sort() + ',' + zArray.sort();
+				newArray = mArray + ',' + pArray + ',' + sArray + ',' + zArray;
 				outputValue = ''
 				for (each of newArray) {
 					outputValue = outputValue + each;
